@@ -31,10 +31,13 @@ class ContactModel {
   factory ContactModel.fromFastContact(Contact contact, [Uint8List? photo]) {
     final phone = contact.phones.isNotEmpty ? contact.phones.first.number : '';
     final normalized = phone.replaceAll(RegExp(r'\D'), '');
+    final name = (contact.displayName != null && contact.displayName!.trim().isNotEmpty)
+        ? contact.displayName!.trim()
+        : 'Unknown Contact';
 
     return ContactModel(
       id: contact.id,
-      displayName: contact.displayName.isNotEmpty ? contact.displayName : 'Unknown Contact',
+      displayName: name,
       phoneNumber: phone,
       normalizedPhone: normalized,
       photoBytes: photo,
