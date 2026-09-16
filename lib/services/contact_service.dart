@@ -1,4 +1,5 @@
-import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:fast_contacts/fast_contacts.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../models/contact_model.dart';
 
 class ContactService {
@@ -6,16 +7,15 @@ class ContactService {
   ContactService._();
 
   Future<List<ContactModel>> fetchDeviceContacts() async {
-    final bool permissionGranted = await FlutterContacts.requestPermission(readonly: true);
-    if (!permissionGranted) {
-      throw Exception('Contacts permission was denied.');
+    final status = await Permission.contacts.status;
+    if (!status.isGranted) {
+      final requested = await Permission.contacts.request();
+      if (!requested.isGranted) {
+        throw Exception('Contacts permission was denied.');
+      }
     }
 
-    final contacts = await FlutterContacts.getContacts(
-      withProperties: true,
-      withThumbnail: true,
-      withPhoto: true,
-    );
+    final contacts = await FastContacts.getAllContacts();
 
     final List<ContactModel> contactModels = [];
 
@@ -25,7 +25,7 @@ class ContactService {
       final primaryPhone = contact.phones.first.number.trim();
       if (primaryPhone.isEmpty) continue;
 
-      contactModels.add(ContactModel.fromFlutterContact(contact));
+      contactModels.add(ContactModel.fromFastContact(contact));
     }
 
     // Sort alphabetically by display name

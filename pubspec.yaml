@@ -15,7 +15,7 @@ dependencies:
   sqflite: ^2.3.3+1
   path: ^1.9.0
   path_provider: ^2.1.4
-  flutter_contacts: ^1.1.9+2
+  fast_contacts: ^3.0.4
   url_launcher: ^6.3.0
   permission_handler: ^11.3.1
   just_audio: ^0.9.40

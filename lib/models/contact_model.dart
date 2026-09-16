@@ -1,5 +1,5 @@
 import 'dart:typed_data';
-import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:fast_contacts/fast_contacts.dart';
 
 class ContactModel {
   final String id;
@@ -28,7 +28,7 @@ class ContactModel {
     return clean[0].toUpperCase();
   }
 
-  factory ContactModel.fromFlutterContact(Contact contact) {
+  factory ContactModel.fromFastContact(Contact contact, [Uint8List? photo]) {
     final phone = contact.phones.isNotEmpty ? contact.phones.first.number : '';
     final normalized = phone.replaceAll(RegExp(r'\D'), '');
 
@@ -37,7 +37,7 @@ class ContactModel {
       displayName: contact.displayName.isNotEmpty ? contact.displayName : 'Unknown Contact',
       phoneNumber: phone,
       normalizedPhone: normalized,
-      photoBytes: contact.photo,
+      photoBytes: photo,
       updatedAt: DateTime.now(),
     );
   }
