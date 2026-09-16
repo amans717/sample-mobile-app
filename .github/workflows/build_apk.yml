@@ -43,7 +43,6 @@ jobs:
 
       - name: Inject AGP 8 namespace fallback & configure build.gradle
         run: |
-          # Inject AGP 8 namespace fallback into android/build.gradle
           cat << 'EOF' >> android/build.gradle
 
           subprojects {
@@ -59,7 +58,6 @@ jobs:
           }
           EOF
 
-          # Configure android/app/build.gradle
           python3 -c "
           import re, os
           gradle_file = 'android/app/build.gradle'
@@ -86,7 +84,13 @@ jobs:
 
       - name: Build Android APK
         run: |
-          flutter build apk --release --verbose
+          flutter build apk --release --verbose > build.log 2>&1 || {
+            echo "## Build Failure Log" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            tail -n 120 build.log >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            exit 1
+          }
 
       - name: Upload APK Artifact
         if: success()
